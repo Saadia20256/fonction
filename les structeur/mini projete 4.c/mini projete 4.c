@@ -31,29 +31,35 @@ void ajoutre des etudaints
 
     struct etudaint i
     printf("entrer l'id de  etudaint :");
-    scanf("%d",&id);
+    scanf("%d",&i.id);
     printf("entrer le nom de  etudaint");
-    scanf("%s",&nom);
+    scanf("%s",&i.nom);
     printf("entrer le prenom de etudaint :");
-    scanf("%s",&prenom);
+    scanf("%s",&i.prenom);
     printf("entrerla moyenne de etudaint :");
     scanf("%f",&moyenne);
     printf("entrer age de etudaint :");
-    scanf("%d",&age);
+    scanf("%d",&i.age);
 }elese {
     printf("limit des etudaints :\n");
 } 
 void afficher_etudiants() {
     
         printf("Liste des étudiants :\n");
-        for (int i = 0; i < nb_etudiants; i++) {
+        for (int i = 0; i < nb_etudaints; i++) {
             printf("ID: %d, Nom: %s, Prénom: %s, Âge: %d, Moyenne: %.2f\n",
-                   etudiants[i].id, etudiants[i].nom, etudiants[i].prenom,
-                   etudiants[i].age, etudiants[i].moyenne);
+                   etudaiants[i].id, etudiants[i].nom, etudiants[i].prenom,
+                   etudaints[i].age, etudiants[i].moyenne);
         }
     }
 
-struct cours 
-printf("entrer")
+ 
+void ajoutre des cours 
+{
+    if(nb_cours <max_cours) }
+
+
+
+
 
 
