@@ -1,65 +1,127 @@
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
-typedef max des etudaints ;
-typedef max des cours ;
+#define MAX_MOTS 200
+#define MAX_TAILLE_MOT 50
+#define MAX_TEXTE 2000
 
-struct etudaints 
-{
-    int id ;
-    char nom[20];
-    char prenom[20];
-    float moyenne ;
-    int age; 
+typedef struct {
+    char mot[MAX_TAILLE_MOT];
+    int occurrences;
+    int longueur;
+    int positions[100];
+    int nombrePositions;
+} Mot;
+
+Mot dictionnaire[MAX_MOTS];
+int nombreMots = 0;
+
+
+void nettoyer_Mot(char *mot) {
+    char temporaire[MAX_TAILLE_MOT];
+    int indexTemp = 0;
+    for(int index=0; mot[index]; index++){
+        if(isalpha((unsigned char)mot[index]))
+            temporaire[indexTemp++] = tolower((unsigned char)mot[index]);
+    }
+    temporaire[indexTemp]='\0';
+    strcpy(mot,temporaire);
 }
-struct cours 
-{
-   char code [10];
-   char nom [100];
-   int credits ;
-   float note ; 
+while (choix != 0);
+
+int chercherMot(char *mot) {
+    for(int i=0;i<nombreMots;i++)
+        if(strcmp(dictionnaire[i].mot,mot)==0) return i;
+    return -1;
 }
-struct etudaint [max_etudaint]
-struct cours [max_etudaint]
 
-int nb_etudaint =0;
-int nb_cour =0 ;
 
-void ajoutre des etudaints 
-{
-    if(nb_etudaint<max_etudaint)}
+void analyser_Texte(char *texte) {
+    char *motCourant = strtok(texte," \t\n");
+    int positionActuelle = 1;
+    while(motCourant){
+        nettoyer_Mot(motCourant);
+        if(strlen(motCourant)>0){
+            int index = chercherMot(motCourant);
+            if(index==-1){
+                strcpy(dictionnaire[nombreMots].mot,motCourant);
+                dictionnaire[nombreMots].occurrences = 1;
+                dictionnaire[nombreMots].longueur = strlen(motCourant);
+                dictionnaire[nombreMots].positions[0] = positionActuelle;
+                dictionnaire[nombreMots].nombrePositions = 1;
+                nombreMots++;
+            } else {
+                dictionnaire[index].occurrences++;
+                dictionnaire[index].positions[dictionnaire[index].nombrePositions++] = positionActuelle;
+            }
+        }
+        positionActuelle++;
+        motCourant = strtok(NULL," \t\n");
+    }
+    printf("Analyse terminée (%d mots uniques)\n", nombreMots);
+}
 
-    struct etudaint i
-    printf("entrer l'id de  etudaint :");
-    scanf("%d",&i.id);
-    printf("entrer le nom de  etudaint");
-    scanf("%s",&i.nom);
-    printf("entrer le prenom de etudaint :");
-    scanf("%s",&i.prenom);
-    printf("entrerla moyenne de etudaint :");
-    scanf("%f",&moyenne);
-    printf("entrer age de etudaint :");
-    scanf("%d",&i.age);
-}elese {
-    printf("limit des etudaints :\n");
-} 
-void afficher_etudiants() {
-    
-        printf("Liste des étudiants :\n");
-        for (int i = 0; i < nb_etudaints; i++) {
-            printf("ID: %d, Nom: %s, Prénom: %s, Âge: %d, Moyenne: %.2f\n",
-                   etudaiants[i].id, etudiants[i].nom, etudiants[i].prenom,
-                   etudaints[i].age, etudiants[i].moyenne);
+void afficher_Dictionnaire() {
+    printf("\n--- Dictionnaire ---\n");
+    for(int i=0;i<nombreMots;i++){
+        printf("%s (%d) longueur=%d positions:",dictionnaire[i].mot,dictionnaire[i].occurrences,dictionnaire[i].longueur);
+        for(int j=0;j<dictionnaire[i].nombrePositions;j++)
+            printf("%d ",dictionnaire[i].positions[j]);
+        printf("\n");
+    }
+}
+
+void rechercher_MotExact(char *mot) {
+    nettoyer_Mot(mot);
+    int index = chercherMot(mot);
+    if(index==-1) 
+    printf("Mot non trouvé.\n");
+    else
+     printf("%s trouvé %d fois, longueur=%d\n",dictionnaire[index].mot,dictionnaire[index].occurrences,dictionnaire[index].longueur);
+}
+
+void rechercher_MotPartiel(char *mot) {
+    nettoyer_Mot(mot);
+    int trouve = 0;
+    for(int i=0;i<nombreMots;i++)
+        if(strstr(dictionnaire[i].mot,mot)){
+            printf("%s (%d)\n",dictionnaire[i].mot,dictionnaire[i].occurrences);
+            trouve=1;
+        }
+    if(!trouve)
+     printf("Aucun mot trouvé\n");
+}
+
+
+void afficher_Statistiques() {
+    int totalMots=0,longueurMax=0,longueurMin=999,maxOccurrence=0;
+    char *motLePlusLong="",*motLePlusCourt="",*motLePlusFrequent="";
+    for(int i=0;i<nombreMots;i++){
+        totalMots += dictionnaire[i].occurrences;
+        if(dictionnaire[i].longueur > longueurMax){
+            longueurMax=dictionnaire[i].longueur; motLePlusLong=dictionnaire[i].mot;
+        }
+        if(dictionnaire[i].longueur < longueurMin){
+            longueurMin=dictionnaire[i].longueur; motLePlusCourt=dictionnaire[i].mot;
+        }
+        if(dictionnaire[i].occurrences > maxOccurrence){
+            
+            maxOccurrence=dictionnaire[i].occurrences; motLePlusFrequent=dictionnaire[i].mot;
         }
     }
-
- 
-void ajoutre des cours 
-{
-    if(nb_cours <max_cours) }
-
-
-
+    printf("\n--- Statistiques ---\n");
+    printf("Total de mots: %d\n",totalMots);
+    printf("Nombre de mots uniques: %d\n",nombreMots);
+    printf("Longueur moyenne: %.2f\n",totalMots/(float)nombreMots);
+    printf("Mot le plus long: %s / Mot le plus court: %s / Mot le plus fréquent: %s\n",motLePlusLong,motLePlusCourt,motLePlusFrequent);
+}
 
 
+int estPalindrome(char *mot){
+    int longueur = strlen(mot);
+    for(int i=0;i<longueur/2;i++)
+        if(mot[i] != mot[longueur-1-i]) return 0;
+    return 1;
+}
 
